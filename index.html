@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jimma Medical Drug Store | Your Trusted Healthcare Partner</title>
+    <meta name="description" content="Seamless digital prescription management, wholesale services, and expert-led community care in Jimma, Ethiopia.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F4C81',
+                        primaryDark: '#114B5F',
+                        accent: '#2EC4B6',
+                        accentDark: '#25A196',
+                        bglight: '#F8FAFC',
+                        textdark: '#1E293B',
+                        textmuted: '#475569'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(15, 76, 129, 0.08)',
+                        'floating': '0 20px 50px -20px rgba(46, 196, 182, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Three.js for 3D Hero Element -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        body {
+            background-color: #F8FAFC;
+            color: #1E293B;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* 3D Canvas container */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="font-sans relative">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-primaryDark text-white text-xs md:text-sm py-2 px-4 flex justify-between items-center z-50 relative">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="hidden sm:inline"><i class="fa-solid fa-location-dot mr-1 text-accent"></i> Jimma, Oromia, Ethiopia</span>
+                <span><i class="fa-solid fa-phone mr-1 text-accent"></i> +251 47 111 2233</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="store-status" class="font-semibold flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+                    </span>
+                    Open Now
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm transition-all duration-300" id="main-nav">
+        <div class="container mx-auto px-4 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-soft group-hover:bg-primaryDark transition-colors">
+                    <i class="fa-solid fa-staff-snake text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-xl leading-tight text-primary">Jimma Medical</h1>
+                    <p class="text-[0.65rem] uppercase tracking-wider text-accent font-semibold">Pharmacy & Wholesale</p>
+                </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center gap-8 font-medium text-sm text-textdark">
+                <a href="#" class="hover:text-primary transition-colors text-primary font-semibold">Home</a>
+                <a href="#about" class="hover:text-primary transition-colors">About Us</a>
+                <a href="#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="#products" class="hover:text-primary transition-colors">Products</a>
+                <a href="#contact" class="hover:text-primary transition-colors">Contact Us</a>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="hidden md:flex items-center gap-3">
+                <a href="#products" class="px-5 py-2.5 rounded-full bg-accent text-primaryDark font-bold hover:bg-accentDark hover:text-white shadow-floating transition-all text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-phone"></i> Call to Order
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-2xl text-primary" id="mobile-menu-btn" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl" id="mobile-menu">
+            <div class="flex flex-col p-4 gap-4">
+                <a href="#" class="p-2 border-b border-slate-50 text-primary font-medium">Home</a>
+                <a href="#about" class="p-2 border-b border-slate-50 text-textdark font-medium">About Us</a>
+                <a href="#services" class="p-2 border-b border-slate-50 text-textdark font-medium">Services</a>
+                <a href="#products" class="p-2 border-b border-slate-50 text-textdark font-medium">Products</a>
+                <a href="#contact" class="p-2 border-b border-slate-50 text-textdark font-medium">Contact Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[75vh] flex items-center bg-gradient-to-br from-bglight to-slate-100 overflow-hidden pt-10 pb-20 md:pt-0">
+        <!-- 3D Canvas Background -->
+        <div id="canvas-container"></div>
+        
+        <div class="container mx-auto px-4 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Text -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <div class="inline-block px-4 py-1.5 rounded-full bg-teal-50 text-primary border border-teal-100 text-sm font-semibold w-max mb-2">
+                        <i class="fa-solid fa-heart-pulse mr-1 text-accent"></i> Your Trusted Healthcare Partner
+                    </div>
+                    <h2 class="font-heading text-5xl lg:text-7xl font-extrabold text-primaryDark leading-[1.1] tracking-tight">
+                        Transforming Healthcare in <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Ethiopia.</span>
+                    </h2>
+                    <p class="text-lg text-textmuted max-w-xl leading-relaxed mt-2">
+                        We strive to become the formidable agent of progress, ensuring access to exceptional healthcare solutions, pharmaceutical products, and medical equipment for all.
+                    </p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 mt-6">
+                        <a href="#products" class="bg-primary hover:bg-primaryDark text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-lg flex items-center gap-2">
+                            Browse Products <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="#about" class="px-8 py-3.5 rounded-xl border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all">
+                            Our Story
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Imagery -->
+                <div class="lg:col-span-5 hidden lg:block relative">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-accent/20 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 glass p-2 rounded-[2rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 border border-white">
+                        <img src="https://placehold.co/600x600/0F4C81/ffffff?text=Quality+Pharmacy+Care" alt="Pharmacy Care" class="rounded-[1.5rem] w-full object-cover h-[450px]">
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Our Story & Stats Section -->
+    <section id="about" class="py-20 bg-white relative">
+        <div class="container mx-auto px-4 lg:px-8">
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 -mt-28 relative z-20">
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-slate-100 text-center">
+                    <h3 class="text-4xl font-heading font-extrabold text-primary mb-1">2005</h3>
+                    <p class="text-sm text-slate-500 font-medium">Established</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-slate-100 text-center">
+                    <h3 class="text-4xl font-heading font-extrabold text-primary mb-1">3</h3>
+                    <p class="text-sm text-slate-500 font-medium">Branches in Jimma</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-slate-100 text-center">
+                    <h3 class="text-4xl font-heading font-extrabold text-primary mb-1">800+</h3>
+                    <p class="text-sm text-slate-500 font-medium">Weekly Customers</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-slate-100 text-center">
+                    <h3 class="text-4xl font-heading font-extrabold text-primary mb-1">120+</h3>
+                    <p class="text-sm text-slate-500 font-medium">Institutions Served</p>
+                </div>
+            </div>
+
+            <!-- About Content -->
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Find Out Our Story</h3>
+                    <h2 class="font-heading text-4xl font-bold text-primaryDark mb-6">Our Story</h2>
+                    <p class="text-slate-600 mb-6 leading-relaxed">
+                        Established in 2005, Jimma Medical Drug Store has grown into a household name in the pharmaceutical retail industry in the Oromia region. Throughout the years, we have transitioned from a single neighborhood pharmacy to a 3-branch operation across Jimma.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed">
+                        Apart from the supply of essential pharmaceutical products, we also provide medical equipment, cosmetics, baby products, compounding, and bulk wholesale services to clinics and hospitals. We are deeply embedded in the community, providing a line of credit and reliable supply chains to institutional partners.
+                    </p>
+                </div>
+                <div class="relative">
+                    <img src="https://placehold.co/600x400/F8FAFC/0F4C81?text=Our+History" alt="Pharmacy History" class="rounded-2xl shadow-lg relative z-10 w-full object-cover">
+                    <div class="absolute -bottom-6 -left-6 w-3/4 h-full border-4 border-accent rounded-2xl z-0"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purpose, Vision, Mission -->
+    <section class="py-20 bg-bglight border-y border-slate-200">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <!-- Purpose -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-soft transition-all">
+                    <div class="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-accent text-2xl mb-6">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h4 class="font-heading font-bold text-2xl text-primaryDark mb-4">Our Purpose</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        To provide the highest quality products and services that enhance the well-being of humanity. We strive to constantly improve and innovate to meet the evolving needs of our customers and make a lasting impact on the healthcare landscape in Ethiopia.
+                    </p>
+                </div>
+
+                <!-- Vision -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-soft transition-all">
+                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-primary text-2xl mb-6">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h4 class="font-heading font-bold text-2xl text-primaryDark mb-4">Our Vision</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        To enhance accessibility to the finest pharmaceutical products, services, and medical equipment, effectively bridging the gap between supply and demand. We are driven to ensure all individuals and institutions have reliable access to healthcare essentials.
+                    </p>
+                </div>
+
+                <!-- Mission -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-soft transition-all">
+                    <div class="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-accent text-2xl mb-6">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <h4 class="font-heading font-bold text-2xl text-primaryDark mb-4">Our Mission</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        To instill hope in the public by delivering exceptional quality healthcare solutions through the retailing of pharmaceutical goods and services. We aim to empower individuals to take charge of their well-being through commitment to excellence and innovation.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-20 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">What We Offer</h3>
+                <h2 class="font-heading text-4xl font-bold text-primaryDark mb-4">Our Services</h2>
+                <p class="text-textmuted">Providing comprehensive healthcare solutions to individuals and institutions.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="p-6 border border-slate-100 rounded-2xl bg-bglight group hover:bg-primary transition-colors">
+                    <i class="fa-solid fa-pills text-4xl text-primary mb-4 group-hover:text-white transition-colors"></i>
+                    <h4 class="font-heading font-bold text-xl text-primaryDark group-hover:text-white transition-colors mb-2">OTC Medication</h4>
+                    <p class="text-sm text-slate-600 group-hover:text-slate-200">A wide range of over-the-counter medicines for immediate relief and wellness.</p>
+                </div>
+                <div class="p-6 border border-slate-100 rounded-2xl bg-bglight group hover:bg-primary transition-colors">
+                    <i class="fa-solid fa-user-doctor text-4xl text-primary mb-4 group-hover:text-white transition-colors"></i>
+                    <h4 class="font-heading font-bold text-xl text-primaryDark group-hover:text-white transition-colors mb-2">Medical Advice</h4>
+                    <p class="text-sm text-slate-600 group-hover:text-slate-200">Expert consultation from licensed pharmacists regarding prescriptions and health.</p>
+                </div>
+                <div class="p-6 border border-slate-100 rounded-2xl bg-bglight group hover:bg-primary transition-colors">
+                    <i class="fa-solid fa-spa text-4xl text-primary mb-4 group-hover:text-white transition-colors"></i>
+                    <h4 class="font-heading font-bold text-xl text-primaryDark group-hover:text-white transition-colors mb-2">Cosmetics & Baby</h4>
+                    <p class="text-sm text-slate-600 group-hover:text-slate-200">High-quality dermatological cosmetics and essential infant care products.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-24 bg-bglight border-t border-slate-200">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Explore Our Inventory</h3>
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-primaryDark">Featured Products</h2>
+                </div>
+                <div class="text-primaryDark font-semibold flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200">
+                    <i class="fa-solid fa-phone text-accent"></i> Call to order: <a href="tel:+251968422225" class="text-primary hover:underline">+2519-684-22225</a>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                
+                <!-- Product Card Template -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/736x/ff/6a/95/ff6a955b14a716d589aaeb05196c8833.jpg" alt="Cefalexin" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">Cefalexin</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/1200x/1c/f7/3e/1cf73eab97b129aff30d3f2bc815abb3.jpg" alt="Amoxicillin" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">Amoxicillin</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/1200x/6f/ae/81/6fae8126ca2c5f1f1e49ce7261a048a2.jpg" alt="Examination Glove" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">EXAMINATION GLOVE MEDIUM</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://placehold.co/200x200/F8FAFC/0F4C81?text=First+Aid" alt="First Aid Plaster" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">FIRST AID PLASTER</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/736x/d3/c4/c0/d3c4c0ce8ad7637f50c3c9b208c6f940.jpg" alt="Panadol Advance" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">PANADOL ADVANCE</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/736x/4e/b3/44/4eb344abc8c4868f5cee8709629e0f80.jpg" alt="Ciprofloxacin" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">CIPROFLOXACIN</h4>
+                    </div>
+                    <a href="tel:+251968422225" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://placehold.co/200x200/F8FAFC/0F4C81?text=Azitro" alt="Azitro" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">AZITRO</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-soft transition-shadow">
+                    <div>
+                        <div class="bg-slate-50 rounded-xl h-40 mb-4 flex items-center justify-center p-4">
+                            <img src="https://i.pinimg.com/736x/53/38/2b/53382bf6211bc04b6ffbc0095a88fe97.jpg" alt="Metformin" class="max-h-full object-contain mix-blend-multiply">
+                        </div>
+                        <h4 class="font-heading font-bold text-lg text-primaryDark leading-tight mb-4 uppercase">METFORMIN</h4>
+                    </div>
+                    <a href="tel:+251471112233" class="w-full text-center py-2.5 rounded-lg border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
+                        Call to order
+                    </a>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-8 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition-colors">
+                    Load More Products
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16">
+                
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Get in touch</h3>
+                    <h2 class="font-heading text-4xl font-bold text-primaryDark mb-6">Contact Us</h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        We'd love to hear from you! Whether you have a question, suggestion, or just want to say hello, please feel free to reach out to us using the form or the contact details below.
+                    </p>
+                    
+                    <div class="flex flex-col gap-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-teal-50 text-accent flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-primaryDark text-lg">Our Address</h4>
+                                <p class="text-slate-600">3 Branches, Jimma, Oromia, Ethiopia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-teal-50 text-accent flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-primaryDark text-lg">Email Us</h4>
+                                <a href="meetzak2123@gmail.com" class="text-primary hover:underline">meetzak2123@gmail.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-teal-50 text-accent flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-bold text-primaryDark text-lg">Call Us</h4>
+                                <a href="tel:+251471112233" class="text-primary hover:underline">+251 96 842 2225</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-bglight p-8 rounded-3xl border border-slate-100 shadow-sm">
+                    <form onsubmit="event.preventDefault(); alert('Your message has been sent. Thank you!');" class="flex flex-col gap-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Your Name</label>
+                            <input type="text" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-accent bg-white" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Your Email</label>
+                            <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-accent bg-white" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Message</label>
+                            <textarea rows="4" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-accent bg-white" placeholder="How can we help you?"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white py-4 rounded-xl font-bold transition-colors shadow-md mt-2">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#111827] text-slate-300 pt-20 pb-10 border-t-4 border-primary">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Brand Info -->
+                <div>
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+                            <i class="fa-solid fa-staff-snake text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-heading font-bold text-xl leading-tight text-white">Jimma Medical</h2>
+                        </div>
+                    </a>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                        Instilling hope in the public by delivering exceptional quality healthcare solutions through the retailing of pharmaceutical goods and services.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-white"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-white"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-white"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Contact Detail Footer -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold text-lg mb-6 relative inline-block">
+                        Contact Info
+                        <span class="absolute -bottom-2 left-0 w-1/2 h-1 bg-accent rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-accent"></i>
+                            <span>3 Branches<br>Jimma, Ethiopia</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-accent"></i>
+                            <span>+251 96 842 2225</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-accent"></i>
+                            <span>meetzak2123@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Useful Links -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold text-lg mb-6 relative inline-block">
+                        Useful Links
+                        <span class="absolute -bottom-2 left-0 w-1/2 h-1 bg-accent rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Home</a></li>
+                        <li><a href="#products" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Products</a></li>
+                        <li><a href="#about" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> About Us</a></li>
+                        <li><a href="#contact" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Our Services -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold text-lg mb-6 relative inline-block">
+                        Our Services
+                        <span class="absolute -bottom-2 left-0 w-1/2 h-1 bg-accent rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#services" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> OTC Medication</a></li>
+                        <li><a href="#services" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Medical Advice</a></li>
+                        <li><a href="#services" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Cosmetics</a></li>
+                        <li><a href="#services" class="hover:text-accent transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> Wholesale Distribution</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                <p>&copy; Copyright Jimma Medical Drug Store. All Rights Reserved.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = menuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            });
+        });
+
+        // -------------------------------------------------------------
+        // Three.js Elegant 3D Background setup
+        // -------------------------------------------------------------
+        const init3D = () => {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene setup
+            const scene = new THREE.Scene();
+            
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 15;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight1.position.set(10, 20, 10);
+            scene.add(directionalLight1);
+
+            const directionalLight2 = new THREE.DirectionalLight(0x2EC4B6, 0.5); 
+            directionalLight2.position.set(-10, -10, 10);
+            scene.add(directionalLight2);
+
+            // Group to hold objects
+            const objectGroup = new THREE.Group();
+            scene.add(objectGroup);
+
+            // Materials
+            const primaryMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x0F4C81,
+                shininess: 80,
+                specular: 0x444444,
+                transparent: true,
+                opacity: 0.9
+            });
+            
+            const accentMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x2EC4B6,
+                shininess: 90,
+                specular: 0xffffff,
+                transparent: true,
+                opacity: 0.85
+            });
+
+            const objects = [];
+
+            function createPill(material) {
+                const geometry = new THREE.SphereGeometry(0.4, 16, 16);
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.scale.y = 1.8; 
+                return mesh;
+            }
+
+            for (let i = 0; i < 15; i++) {
+                const mat = i % 3 === 0 ? accentMaterial : primaryMaterial;
+                let mesh = createPill(mat);
+                
+                mesh.position.x = (Math.random() - 0.5) * 40;
+                mesh.position.y = (Math.random() - 0.5) * 20;
+                mesh.position.z = (Math.random() - 0.5) * 10 - 5; 
+
+                mesh.rotation.x = Math.random() * Math.PI;
+                mesh.rotation.y = Math.random() * Math.PI;
+                
+                mesh.userData = {
+                    rotationSpeed: {
+                        x: (Math.random() - 0.5) * 0.01,
+                        y: (Math.random() - 0.5) * 0.02
+                    },
+                    floatSpeed: (Math.random() * 0.01) + 0.005,
+                    floatOffset: Math.random() * Math.PI * 2,
+                    initialY: mesh.position.y
+                };
+
+                objectGroup.add(mesh);
+                objects.push(mesh);
+            }
+
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX) * 0.001;
+                mouseY = (event.clientY - windowHalfY) * 0.001;
+            });
+
+            const clock = new THREE.Clock();
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+
+                targetX = mouseX * 2;
+                targetY = mouseY * 2;
+                
+                objectGroup.rotation.y += 0.05 * (targetX - objectGroup.rotation.y);
+                objectGroup.rotation.x += 0.05 * (targetY - objectGroup.rotation.x);
+
+                objects.forEach(obj => {
+                    obj.rotation.x += obj.userData.rotationSpeed.x;
+                    obj.rotation.y += obj.userData.rotationSpeed.y;
+                    obj.position.y = obj.userData.initialY + Math.sin(time * 0.5 + obj.userData.floatOffset) * 1.5;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        window.addEventListener('load', init3D);
+
+    </script>
+</body>
+</html>
